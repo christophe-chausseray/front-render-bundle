@@ -1,0 +1,27 @@
+{
+    "name": "chris13/theme-dispatcher-bundle",
+    "type": "symfony-bundle",
+    "description": "Dispatch on the right theme.",
+    "keywords": [
+        "Symfony 2",
+        "AngularJs",
+        "Theme Dispatcher"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.3",
+        "symfony/symfony": "~2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Chris\\Bundle\\ThemeDispatcherBundle\\": ""
+        }
+    },
+    "authors": [
+        {
+            "name": "Christophe Chausseray",
+            "email": "chausseray.christophe@gmail.com",
+            "role": "Developer"
+        }
+    ]
+}
