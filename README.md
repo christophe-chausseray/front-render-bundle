@@ -1,1 +1,1 @@
-# theme-dispatcher-bundle
+# front-render-bundle
