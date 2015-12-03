@@ -22,7 +22,7 @@ class AppExtension extends Extension
         $configuration = new Configuration();
         $config        = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('app_bundle.theme_dispatcher.front_path', trim($config['front_path']));
+        $container->setParameter('front_render_bundle.front_path', trim($config['front_path']));
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/services'));
     }
