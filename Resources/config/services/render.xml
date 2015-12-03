@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="front_render_bundle.front_render.class">Chris\Bundle\FrontRenderBundle\Render\FrontRender</parameter>
+    </parameters>
+
+    <services>
+        <service id="front_render_bundle.front_render" class="%front_render_bundle.front_render.class%">
+            <argument type="service" id="templating" />
+            <argument type="service" id="event_dispatcher" />
+            <argument>%front_render_bundle.front_path%</argument>
+        </service>
+    </services>
+</container>

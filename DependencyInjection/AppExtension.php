@@ -25,5 +25,6 @@ class AppExtension extends Extension
         $container->setParameter('front_render_bundle.front_path', trim($config['front_path']));
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/services'));
+        $loader->load('render.xml');
     }
 }
