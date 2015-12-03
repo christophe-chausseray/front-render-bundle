@@ -56,7 +56,7 @@ class FrontRender
     /**
      * @return string
      */
-    public function dispatch()
+    public function render()
     {
         return $this->engine->render($this->frontPath, $this->parameters);
     }
