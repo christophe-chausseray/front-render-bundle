@@ -2,6 +2,9 @@
 
 namespace Chris\Bundle\FrontRenderBundle\Render;
 
+use Chris\Bundle\FrontRenderBundle\Event\BeforeRenderEvent;
+use Chris\Bundle\FrontRenderBundle\Exception\FrontRenderException;
+use Chris\Bundle\FrontRenderBundle\FrontRenderEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -58,6 +61,14 @@ class FrontRender
      */
     public function render()
     {
+        $event = new BeforeRenderEvent($this->frontPath);
+        $this->dispatcher->dispatch(FrontRenderEvents::BEFORE_RENDER, $event);
+
+        $frontPath = $event->getFrontPath();
+        if (empty($frontPath)) {
+            throw new FrontRenderException('You need to configure a front path.');
+        }
+
         return $this->engine->render($this->frontPath, $this->parameters);
     }
 }
