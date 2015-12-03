@@ -1,6 +1,6 @@
 <?php
 
-namespace Chris\Bundle\FrontDispatcherBundle;
+namespace Chris\Bundle\FrontRenderBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
