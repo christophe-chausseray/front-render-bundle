@@ -14,7 +14,7 @@
     },
     "suggest": {
         "twig/twig": "Should install twig"
-    }
+    },
     "autoload": {
         "psr-4": {
             "Chris\\Bundle\\FrontRenderBundle\\": ""
