@@ -1,3 +1,9 @@
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/bcbdd559-f6af-48d4-a6a5-1c859f4267c6/big.png)](https://insight.sensiolabs.com/projects/bcbdd559-f6af-48d4-a6a5-1c859f4267c6)
+
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/christophe-chausseray/front-render-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/christophe-chausseray/front-render-bundle/?branch=master)
+
+[![Build Status](https://scrutinizer-ci.com/g/christophe-chausseray/front-render-bundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/christophe-chausseray/front-render-bundle/build-status/master)
+
 # Front Render Bundle
 
 Render Front Application (AngularJs, BackboneJs...) through Symfony 2 Application
