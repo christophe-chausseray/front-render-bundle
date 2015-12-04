@@ -1,6 +1,7 @@
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/bcbdd559-f6af-48d4-a6a5-1c859f4267c6/big.png)](https://insight.sensiolabs.com/projects/bcbdd559-f6af-48d4-a6a5-1c859f4267c6)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/christophe-chausseray/front-render-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/christophe-chausseray/front-render-bundle/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/christophe-chausseray/front-render-bundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/christophe-chausseray/front-render-bundle/build-status/master)
+[![Dependency Status](https://www.versioneye.com/user/projects/5661b9b9f376cc002c00097f/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5661b9b9f376cc002c00097f)
 
 # Front Render Bundle
 
