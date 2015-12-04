@@ -3,4 +3,4 @@
 ```yml
 front_render:
     front_path: app_path
-``
+```
