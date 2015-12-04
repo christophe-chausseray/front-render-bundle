@@ -20,9 +20,9 @@ class TwigListener
     }
 
     /**
-     * @param GetResponseEvent $event
+     * Update twig tags
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function updateTagTwig()
     {
         $lexer = new \Twig_Lexer($this->twig, [
             'tag_comment'  => ['<%#', '%>'],

@@ -11,7 +11,7 @@
     <services>
         <service id="front_render_bundle.twig_listener" class="%front_render_bundle.twig_listener.class%">
             <argument type="service" id="twig" />
-            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest"/>
+            <tag name="kernel.event_listener" event="kernel.request" method="updateTagTwig"/>
         </service>
     </services>
 </container>
