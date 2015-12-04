@@ -2,8 +2,6 @@
 
 namespace Chris\Bundle\FrontRenderBundle\Listener;
 
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-
 class TwigListener
 {
     /**
