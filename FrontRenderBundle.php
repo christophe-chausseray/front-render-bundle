@@ -2,7 +2,7 @@
 
 namespace Chris\Bundle\FrontRenderBundle;
 
-use AppBundle\DependencyInjection\TwigListenerCompilerPass;
+use Chris\Bundle\FrontRenderBundle\DependencyInjection\CompilerPass\TwigListenerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

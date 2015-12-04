@@ -22,7 +22,8 @@ class FrontRenderExtension extends Extension
         $configuration = new Configuration();
         $config        = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('front_render_bundle.front_path', trim($config['front_path']));
+        $frontPath = (array_key_exists('front_path', $config) ? $config['front_path'] : '');
+        $container->setParameter('front_render_bundle.front_path', trim($frontPath));
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/services'));
         $loader->load('render.xml');

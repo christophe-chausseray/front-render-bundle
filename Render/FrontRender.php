@@ -69,6 +69,6 @@ class FrontRender
             throw new FrontRenderException('You need to configure a front path.');
         }
 
-        return $this->engine->render($this->frontPath, $this->parameters);
+        return $this->engine->render($frontPath, $this->parameters);
     }
 }
