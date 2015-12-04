@@ -52,8 +52,9 @@ Configure the bundle
 
 2 differents solutions to configure the path to Front Application :
 
-    - [Configuration by the config.yml](./Config.md)
-    - [Configuration by listener](./Listener.md)
+-[Configuration by the config.yml](./Config.md)
+
+-[Configuration by listener](./Listener.md)
 
 
 Usage
