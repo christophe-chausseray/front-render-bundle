@@ -40,13 +40,14 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->twigLoader         = new \Twig_Loader_Filesystem([$_SERVER['KERNEL_DIR'] . 'Tests/Template']);
-        $this->twigEnvironment    = new \Twig_Environment($this->twigLoader, ['cache' => false]);
-        $this->templateNameParser = new TemplateNameParser();
-        $this->fileLocator        = new FileLocator();
-        $this->engine             = new TwigEngine($this->twigEnvironment, $this->templateNameParser, $this->fileLocator);
-        $this->twigListener       = new TwigListener($this->twigEnvironment);
         $this->eventDispatcher    = \Phake::mock(EventDispatcher::class);
+        $this->twigLoader         = \Phake::partialMock(\Twig_Loader_Filesystem::class, [$_SERVER['KERNEL_DIR'] . 'Tests/Template']);
+        $this->twigEnvironment    = \Phake::partialMock(\Twig_Environment::class, $this->twigLoader);
+        $this->twigListener       = \Phake::partialMock(TwigListener::class, $this->twigEnvironment);
+
+        $this->templateNameParser = \Phake::mock(TemplateNameParser::class);
+        $this->fileLocator        = \Phake::mock(FileLocator::class);
+        $this->engine             = \Phake::partialMock(TwigEngine::class, $this->twigEnvironment, $this->templateNameParser, $this->fileLocator);
 
         $lexer = $this->twigListener->getLexer();
         $this->twigEnvironment->setLexer($lexer);
