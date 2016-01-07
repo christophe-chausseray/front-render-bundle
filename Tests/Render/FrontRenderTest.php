@@ -15,6 +15,11 @@ use Twig_Error_Syntax;
 class FrontRenderTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @var string TEMPLATE_PATH
+     */
+    const TEMPLATE_PATH = 'Tests/Template';
+
+    /**
      * @var string TEMPLATE
      */
     const TEMPLATE = 'index.html.twig';
@@ -30,42 +35,42 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
     const FAILED_PATH = 'failedPath.html.twig';
 
     /**
-     * @var EventDispatcher $eventDispatcher
+     * @var EventDispatcher
      */
     protected $eventDispatcher;
 
     /**
-     * @var \Twig_Loader_Filesystem $twigLoader
+     * @var \Twig_Loader_Filesystem
      */
     protected $twigLoader;
 
     /**
-     * @var \Twig_Environment $twigEnvironment
+     * @var \Twig_Environment
      */
     protected $twigEnvironment;
 
     /**
-     * @var TwigListener $twigListener
+     * @var TwigListener
      */
     protected $twigListener;
 
     /**
-     * @var TemplateNameParser $templateNameParser
+     * @var TemplateNameParser
      */
     protected $templateNameParser;
 
     /**
-     * @var FileLocator $fileLocator
+     * @var FileLocator
      */
     protected $fileLocator;
 
     /**
-     * @var TwigEngine $engine
+     * @var TwigEngine
      */
     protected $engine;
 
     /**
-     * @var FrontRender $frontRender
+     * @var FrontRender
      */
     protected $frontRender;
 
@@ -77,7 +82,7 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->eventDispatcher = \Phake::mock(EventDispatcher::class);
-        $this->twigLoader      = \Phake::partialMock(\Twig_Loader_Filesystem::class, [$_SERVER['KERNEL_DIR'] . 'Tests/Template']);
+        $this->twigLoader      = \Phake::partialMock(\Twig_Loader_Filesystem::class, [$_SERVER['KERNEL_DIR'] . self::TEMPLATE_PATH]);
         $this->twigEnvironment = \Phake::partialMock(\Twig_Environment::class, $this->twigLoader);
         $this->twigListener    = \Phake::partialMock(TwigListener::class, $this->twigEnvironment);
 
@@ -102,11 +107,9 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $response = new Response($this->frontRender->render());
-
         $this->assertContains(
             'Welcome on Test Render',
-            $response->getContent()
+            $this->frontRender->render()
         );
     }
 
@@ -117,11 +120,9 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
     {
         $this->frontRender = new FrontRender($this->engine, $this->eventDispatcher, self::TEMPLATE);
 
-        $response = new Response($this->frontRender->render());
-
         $this->assertNotContains(
             'Test Render',
-            $response->getContent()
+            $this->frontRender->render()
         );
     }
 
@@ -130,8 +131,8 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider lexerTags
      *
-     * @param $oldTags
-     * @param $newTags
+     * @param string $oldTags
+     * @param string $newTags
      */
     public function testSetLexer($oldTags, $newTags)
     {
@@ -143,18 +144,16 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $response = new Response($this->frontRender->render());
-
-        $this->assertEquals(200, $response->getStatusCode());
+        $render = $this->frontRender->render();
 
         $this->assertContains(
             $oldTags,
-            $response->getContent()
+            $render
         );
 
         $this->assertNotContains(
             $newTags,
-            $response->getContent()
+            $render
         );
     }
 
@@ -196,7 +195,7 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Provide the lexer tags
-     * 
+     *
      * @return array
      */
     public function lexerTags()
@@ -204,7 +203,7 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
         return [
             ['{#', '{*'],
             ['{%', '{@'],
-            ['{{', '{\$']
+            ['{{', '{$']
         ];
 
     }
