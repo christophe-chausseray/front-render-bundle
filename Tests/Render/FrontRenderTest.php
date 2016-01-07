@@ -14,36 +14,72 @@ use Twig_Error_Syntax;
 
 class FrontRenderTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var string TEMPLATE
+     */
     const TEMPLATE = 'index.html.twig';
 
+    /**
+     * @var string FAILED_TEMPLATE
+     */
     const FAILED_TEMPLATE = 'failed.html.twig';
 
+    /**
+     * @var string FAILED_PATH
+     */
     const FAILED_PATH = 'failedPath.html.twig';
 
-    protected $engine;
-
+    /**
+     * @var EventDispatcher $eventDispatcher
+     */
     protected $eventDispatcher;
 
-    protected $frontRender;
-
-    protected $twigEnvironment;
-
-    protected $twigListener;
-
-    protected $templateNameParser;
-
-    protected $fileLocator;
-
+    /**
+     * @var \Twig_Loader_Filesystem $twigLoader
+     */
     protected $twigLoader;
 
+    /**
+     * @var \Twig_Environment $twigEnvironment
+     */
+    protected $twigEnvironment;
+
+    /**
+     * @var TwigListener $twigListener
+     */
+    protected $twigListener;
+
+    /**
+     * @var TemplateNameParser $templateNameParser
+     */
+    protected $templateNameParser;
+
+    /**
+     * @var FileLocator $fileLocator
+     */
+    protected $fileLocator;
+
+    /**
+     * @var TwigEngine $engine
+     */
+    protected $engine;
+
+    /**
+     * @var FrontRender $frontRender
+     */
+    protected $frontRender;
+
+    /**
+     * Set up the front render test
+     */
     public function setUp()
     {
         parent::setUp();
 
-        $this->eventDispatcher    = \Phake::mock(EventDispatcher::class);
-        $this->twigLoader         = \Phake::partialMock(\Twig_Loader_Filesystem::class, [$_SERVER['KERNEL_DIR'] . 'Tests/Template']);
-        $this->twigEnvironment    = \Phake::partialMock(\Twig_Environment::class, $this->twigLoader);
-        $this->twigListener       = \Phake::partialMock(TwigListener::class, $this->twigEnvironment);
+        $this->eventDispatcher = \Phake::mock(EventDispatcher::class);
+        $this->twigLoader      = \Phake::partialMock(\Twig_Loader_Filesystem::class, [$_SERVER['KERNEL_DIR'] . 'Tests/Template']);
+        $this->twigEnvironment = \Phake::partialMock(\Twig_Environment::class, $this->twigLoader);
+        $this->twigListener    = \Phake::partialMock(TwigListener::class, $this->twigEnvironment);
 
         $this->templateNameParser = \Phake::mock(TemplateNameParser::class);
         $this->fileLocator        = \Phake::mock(FileLocator::class);
@@ -53,6 +89,9 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
         $this->twigEnvironment->setLexer($lexer);
     }
 
+    /**
+     * Test render of the template with parameter
+     */
     public function testTemplateRenderWithParameter()
     {
         $this->frontRender = new FrontRender($this->engine, $this->eventDispatcher, self::TEMPLATE);
@@ -71,7 +110,9 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-
+    /**
+     * Test render of the template without parameter
+     */
     public function testTemplateRenderWithoutParameter()
     {
         $this->frontRender = new FrontRender($this->engine, $this->eventDispatcher, self::TEMPLATE);
@@ -85,7 +126,12 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test on the update of lexer
+     *
      * @dataProvider lexerTags
+     *
+     * @param $oldTags
+     * @param $newTags
      */
     public function testSetLexer($oldTags, $newTags)
     {
@@ -113,6 +159,8 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test on the failed template
+     *
      * @expectedException Twig_Error_Syntax
      */
     public function testExceptionOnSyntax()
@@ -123,6 +171,8 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test when the template doesn't exist
+     *
      * @expectedException InvalidArgumentException
      */
     public function testExceptionOnFailedPath()
@@ -133,6 +183,8 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test when the template path is empty
+     *
      * @expectedException Chris\Bundle\FrontRenderBundle\Exception\FrontRenderException
      */
     public function testExceptionOnEmptyPath()
@@ -142,13 +194,18 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
         $this->frontRender->render();
     }
 
+    /**
+     * Provide the lexer tags
+     * 
+     * @return array
+     */
     public function lexerTags()
     {
-        return array(
-            array('{#', '{*'),
-            array('{%', '{@'),
-            array('{{', '{\$')
-        );
+        return [
+            ['{#', '{*'],
+            ['{%', '{@'],
+            ['{{', '{\$']
+        ];
 
     }
 
