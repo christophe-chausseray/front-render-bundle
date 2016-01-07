@@ -98,3 +98,11 @@ class DefaultController extends Controller
     }
 }
 ```
+
+Tests
+-----
+
+Run Unit Test on the bundle:
+```sh
+$ ./bin/phpunit --debug -c ./
+```
