@@ -22,11 +22,18 @@ class TwigListener
      */
     public function updateTagTwig()
     {
-        $lexer = new \Twig_Lexer($this->twig, [
-            'tag_comment'  => ['<%#', '%>'],
-            'tag_block'    => ['<%', '%>'],
-            'tag_variable' => ['<%=', '%>'],
-        ]);
+        $lexer = $this->getLexer();
         $this->twig->setLexer($lexer);
+    }
+
+    public function getLexer()
+    {
+        $lexer = new \Twig_Lexer($this->twig, [
+            'tag_comment'  => ['{*', '*}'],
+            'tag_block'    => ['{@', '@}'],
+            'tag_variable' => ['{$', '$}'],
+        ]);
+
+        return $lexer;
     }
 }
