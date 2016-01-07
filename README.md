@@ -102,7 +102,7 @@ class DefaultController extends Controller
 Tests
 -----
 
-Run Unit Test on the bundle:
+Run Unit Test in the bundle:
 ```sh
 $ ./bin/phpunit --debug -c ./
 ```
