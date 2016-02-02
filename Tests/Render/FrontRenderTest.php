@@ -5,13 +5,17 @@ namespace Chris\Bundle\FrontRenderBundle\Tests\Render;
 use Chris\Bundle\FrontRenderBundle\Listener\TwigListener;
 use Chris\Bundle\FrontRenderBundle\Render\FrontRender;
 use InvalidArgumentException;
+use Phake;
+use PHPUnit_Framework_TestCase;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Templating\TemplateNameParser;
+use Twig_Environment;
 use Twig_Error_Syntax;
+use Twig_Loader_Filesystem;
 
-class FrontRenderTest extends \PHPUnit_Framework_TestCase
+class FrontRenderTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var string TEMPLATE_PATH
@@ -39,12 +43,12 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
     protected $eventDispatcher;
 
     /**
-     * @var \Twig_Loader_Filesystem
+     * @var Twig_Loader_Filesystem
      */
     protected $twigLoader;
 
     /**
-     * @var \Twig_Environment
+     * @var Twig_Environment
      */
     protected $twigEnvironment;
 
@@ -80,14 +84,14 @@ class FrontRenderTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->eventDispatcher = \Phake::mock(EventDispatcher::class);
-        $this->twigLoader      = \Phake::partialMock(\Twig_Loader_Filesystem::class, [$_SERVER['KERNEL_DIR'] . self::TEMPLATE_PATH]);
-        $this->twigEnvironment = \Phake::partialMock(\Twig_Environment::class, $this->twigLoader);
-        $this->twigListener    = \Phake::partialMock(TwigListener::class, $this->twigEnvironment);
+        $this->eventDispatcher = Phake::mock(EventDispatcher::class);
+        $this->twigLoader      = Phake::partialMock(Twig_Loader_Filesystem::class, [$_SERVER['KERNEL_DIR'] . self::TEMPLATE_PATH]);
+        $this->twigEnvironment = Phake::partialMock(Twig_Environment::class, $this->twigLoader);
+        $this->twigListener    = Phake::partialMock(TwigListener::class, $this->twigEnvironment);
 
-        $this->templateNameParser = \Phake::mock(TemplateNameParser::class);
-        $this->fileLocator        = \Phake::mock(FileLocator::class);
-        $this->engine             = \Phake::partialMock(TwigEngine::class, $this->twigEnvironment, $this->templateNameParser, $this->fileLocator);
+        $this->templateNameParser = Phake::mock(TemplateNameParser::class);
+        $this->fileLocator        = Phake::mock(FileLocator::class);
+        $this->engine             = Phake::partialMock(TwigEngine::class, $this->twigEnvironment, $this->templateNameParser, $this->fileLocator);
 
         $lexer = $this->twigListener->getLexer();
         $this->twigEnvironment->setLexer($lexer);

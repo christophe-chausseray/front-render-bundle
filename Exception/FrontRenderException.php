@@ -2,7 +2,9 @@
 
 namespace Chris\Bundle\FrontRenderBundle\Exception;
 
-class FrontRenderException extends \RuntimeException
+use RuntimeException;
+
+class FrontRenderException extends RuntimeException
 {
     /**
      * {@inheritdoc}
