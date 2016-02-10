@@ -1,3 +1,4 @@
 .idea/
 /docs/coverage
 /vendor/
+composer.lock
