@@ -2,7 +2,6 @@
 
 namespace Chris\Bundle\FrontRenderBundle\Tests\Render;
 
-use Chris\Bundle\FrontRenderBundle\Listener\TwigListener;
 use Chris\Bundle\FrontRenderBundle\Render\FrontRender;
 use Chris\Bundle\FrontRenderBundle\Subscriber\RenderSubscriber;
 use InvalidArgumentException;
