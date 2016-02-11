@@ -36,8 +36,8 @@ class RenderSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ['kernel.request' => 'updateTagTwig'],
-            ['kernel.exception' => 'onKernelException'],
+            'kernel.request' => ['updateTagTwig'],
+            'kernel.exception' => ['onKernelException'],
         ];
     }
 
