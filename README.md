@@ -99,6 +99,15 @@ class DefaultController extends Controller
 }
 ```
 
+Update Lexer
+------------
+
+In this bundle the lexer twig is updated. Now you need to use this tags :
+
+- comment : {* *}
+- block : {@ @}
+- variable : {$ $}
+
 Tests
 -----
 

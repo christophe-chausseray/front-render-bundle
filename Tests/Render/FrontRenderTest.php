@@ -2,8 +2,8 @@
 
 namespace Chris\Bundle\FrontRenderBundle\Tests\Render;
 
-use Chris\Bundle\FrontRenderBundle\Listener\TwigListener;
 use Chris\Bundle\FrontRenderBundle\Render\FrontRender;
+use Chris\Bundle\FrontRenderBundle\Subscriber\RenderSubscriber;
 use InvalidArgumentException;
 use Phake;
 use PHPUnit_Framework_TestCase;
@@ -20,7 +20,7 @@ class FrontRenderTest extends PHPUnit_Framework_TestCase
     /**
      * @var string TEMPLATE_PATH
      */
-    const TEMPLATE_PATH = 'Tests/Template';
+    const TEMPLATE_PATH = 'Template';
 
     /**
      * @var string TEMPLATE
@@ -53,9 +53,9 @@ class FrontRenderTest extends PHPUnit_Framework_TestCase
     protected $twigEnvironment;
 
     /**
-     * @var TwigListener
+     * @var RenderSubscriber
      */
-    protected $twigListener;
+    protected $renderSubscriber;
 
     /**
      * @var TemplateNameParser
@@ -84,16 +84,16 @@ class FrontRenderTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->eventDispatcher = Phake::mock(EventDispatcher::class);
-        $this->twigLoader      = Phake::partialMock(Twig_Loader_Filesystem::class, [$_SERVER['KERNEL_DIR'] . self::TEMPLATE_PATH]);
-        $this->twigEnvironment = Phake::partialMock(Twig_Environment::class, $this->twigLoader);
-        $this->twigListener    = Phake::partialMock(TwigListener::class, $this->twigEnvironment);
+        $this->eventDispatcher  = Phake::mock(EventDispatcher::class);
+        $this->twigLoader       = Phake::partialMock(Twig_Loader_Filesystem::class, [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . self::TEMPLATE_PATH]);
+        $this->twigEnvironment  = Phake::partialMock(Twig_Environment::class, $this->twigLoader);
+        $this->renderSubscriber = Phake::partialMock(RenderSubscriber::class, $this->twigEnvironment);
 
         $this->templateNameParser = Phake::mock(TemplateNameParser::class);
         $this->fileLocator        = Phake::mock(FileLocator::class);
         $this->engine             = Phake::partialMock(TwigEngine::class, $this->twigEnvironment, $this->templateNameParser, $this->fileLocator);
 
-        $lexer = $this->twigListener->getLexer();
+        $lexer = $this->renderSubscriber->getFrontLexer();
         $this->twigEnvironment->setLexer($lexer);
     }
 

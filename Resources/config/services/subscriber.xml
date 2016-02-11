@@ -5,13 +5,13 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="front_render_bundle.twig_listener.class">Chris\Bundle\FrontRenderBundle\Listener\TwigListener</parameter>
+        <parameter key="front_render_bundle.render_subscriber.class">Chris\Bundle\FrontRenderBundle\Subscriber\RenderSubscriber</parameter>
     </parameters>
 
     <services>
-        <service id="front_render_bundle.twig_listener" class="%front_render_bundle.twig_listener.class%">
+        <service id="front_render_bundle.render_subscriber" class="%front_render_bundle.render_subscriber.class%">
             <argument type="service" id="twig" />
-            <tag name="kernel.event_listener" event="kernel.request" method="updateTagTwig"/>
+            <tag name="doctrine.event_subscriber" />
         </service>
     </services>
 </container>
