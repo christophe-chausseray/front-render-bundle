@@ -10,7 +10,7 @@
 
     <services>
         <service id="front_render_bundle.render_subscriber" class="%front_render_bundle.render_subscriber.class%">
-            <argument type="service" id="twig" />
+            <argument type="service" id="front_render_bundle.twig_lexer_manager" />
             <tag name="kernel.event_subscriber" />
         </service>
     </services>
