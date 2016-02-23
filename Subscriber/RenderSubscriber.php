@@ -6,7 +6,7 @@ use Chris\Bundle\FrontRenderBundle\Twig\LexerManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class RenderSubscriber implements EventSubscriberInterface
 {
@@ -36,9 +36,8 @@ class RenderSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'kernel.request'   => ['updateTwigLexer'],
-            'kernel.response'  => ['rollbackTwigLexer'],
-            'kernel.exception' => ['onKernelException'],
+            KernelEvents::REQUEST   => ['updateTwigLexer'],
+            KernelEvents::RESPONSE  => ['rollbackTwigLexer'],
         ];
     }
 
@@ -61,17 +60,6 @@ class RenderSubscriber implements EventSubscriberInterface
      * @param FilterResponseEvent $event
      */
     public function rollbackTwigLexer(FilterResponseEvent $event)
-    {
-        $this->twigLexerManager->rollbackLexer();
-        $this->stopPropagation = true;
-    }
-
-    /**
-     * Set the default twig lexer to display default tags on exceptions
-     *
-     * @param GetResponseForExceptionEvent $event
-     */
-    public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $this->twigLexerManager->rollbackLexer();
         $this->stopPropagation = true;

@@ -42,11 +42,6 @@ class ExceptionListenerTest extends PHPUnit_Framework_TestCase
     protected $filterResponseEvent;
 
     /**
-     * @var GetResponseForExceptionEvent|Phake_IMock
-     */
-    protected $exceptionEvent;
-
-    /**
      * @var RenderSubscriber|Phake_IMock
      */
     protected $renderSubscriber;
@@ -72,7 +67,6 @@ class ExceptionListenerTest extends PHPUnit_Framework_TestCase
         $this->getResponseEvent    = Phake::mock(GetResponseEvent::class);
         $this->filterResponseEvent = Phake::mock(FilterResponseEvent::class);
         $this->request             = Phake::mock(Request::class);
-        $this->exceptionEvent      = Phake::mock(GetResponseForExceptionEvent::class);
 
         $this->renderSubscriber = new RenderSubscriber($this->lexerManager);
     }
@@ -98,17 +92,6 @@ class ExceptionListenerTest extends PHPUnit_Framework_TestCase
         $this->renderSubscriber->updateTwigLexer($this->getResponseEvent);
 
         Phake::verify($this->lexerManager)->updateLexer(Phake::anyParameters());
-    }
-
-    /**
-     * Test the lexer update to have the default lexer for exception
-     */
-    public function testSetLexerForException()
-    {
-        $this->renderSubscriber->updateTwigLexer($this->getResponseEvent);
-        $this->renderSubscriber->onKernelException($this->exceptionEvent);
-
-        Phake::verify($this->lexerManager)->rollbackLexer(Phake::anyParameters());
     }
 
     /**
