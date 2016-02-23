@@ -4,6 +4,7 @@ namespace Chris\Bundle\FrontRenderBundle\Tests\Render;
 
 use Chris\Bundle\FrontRenderBundle\Render\FrontRender;
 use Chris\Bundle\FrontRenderBundle\Subscriber\RenderSubscriber;
+use Chris\Bundle\FrontRenderBundle\Twig\LexerManager;
 use InvalidArgumentException;
 use Phake;
 use PHPUnit_Framework_TestCase;
@@ -78,6 +79,11 @@ class FrontRenderTest extends PHPUnit_Framework_TestCase
     protected $frontRender;
 
     /**
+     * @var LexerManager
+     */
+    protected $lexerManager;
+
+    /**
      * Set up the front render test
      */
     public function setUp()
@@ -87,13 +93,14 @@ class FrontRenderTest extends PHPUnit_Framework_TestCase
         $this->eventDispatcher  = Phake::mock(EventDispatcher::class);
         $this->twigLoader       = Phake::partialMock(Twig_Loader_Filesystem::class, [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . self::TEMPLATE_PATH]);
         $this->twigEnvironment  = Phake::partialMock(Twig_Environment::class, $this->twigLoader);
-        $this->renderSubscriber = Phake::partialMock(RenderSubscriber::class, $this->twigEnvironment);
+        $this->lexerManager     = Phake::partialMock(LexerManager::class, $this->twigEnvironment);
+        $this->renderSubscriber = Phake::partialMock(RenderSubscriber::class, $this->lexerManager);
 
         $this->templateNameParser = Phake::mock(TemplateNameParser::class);
         $this->fileLocator        = Phake::mock(FileLocator::class);
         $this->engine             = Phake::partialMock(TwigEngine::class, $this->twigEnvironment, $this->templateNameParser, $this->fileLocator);
 
-        $lexer = $this->renderSubscriber->getFrontLexer();
+        $lexer = $this->lexerManager->getNewLexer();
         $this->twigEnvironment->setLexer($lexer);
     }
 

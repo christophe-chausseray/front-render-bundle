@@ -2,32 +2,32 @@
 
 namespace Chris\Bundle\FrontRenderBundle\Subscriber;
 
+use Chris\Bundle\FrontRenderBundle\Twig\LexerManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Twig_Environment;
-use Twig_Lexer;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class RenderSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var Twig_Environment
+     * @var LexerManager
      */
-    protected $twig;
+    protected $twigLexerManager;
 
     /**
-     * @var Twig_Lexer
+     * @var bool
      */
-    protected $defaultLexer;
+    protected $stopPropagation = false;
 
     /**
      * RenderSubscriber constructor.
      *
-     * @param Twig_Environment $twig
+     * @param LexerManager $twigLexerManager
      */
-    public function __construct(Twig_Environment $twig)
+    public function __construct(LexerManager $twigLexerManager)
     {
-        $this->twig = $twig;
+        $this->twigLexerManager = $twigLexerManager;
     }
 
     /**
@@ -36,8 +36,8 @@ class RenderSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'kernel.request' => ['updateTagTwig'],
-            'kernel.exception' => ['onKernelException'],
+            KernelEvents::REQUEST   => ['updateTwigLexer'],
+            KernelEvents::RESPONSE  => ['rollbackTwigLexer'],
         ];
     }
 
@@ -46,39 +46,22 @@ class RenderSubscriber implements EventSubscriberInterface
      *
      * @param GetResponseEvent $event
      */
-    public function updateTagTwig(GetResponseEvent $event)
+    public function updateTwigLexer(GetResponseEvent $event)
     {
-        $this->defaultLexer = $this->twig->getLexer();
-
-        $lexer = $this->getFrontLexer();
-        $this->twig->setLexer($lexer);
+        if (false === $this->stopPropagation && $event->isMasterRequest() && !$event->getRequest()->isXmlHttpRequest()) {
+            $this->twigLexerManager->updateLexer();
+            $this->stopPropagation = true;
+        }
     }
 
     /**
-     * Set the default twig lexer to display default tags on exceptions
+     * Set the custom twig lexer to display custom tags on the front
      *
-     * @param GetResponseForExceptionEvent $event
+     * @param FilterResponseEvent $event
      */
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function rollbackTwigLexer(FilterResponseEvent $event)
     {
-        $this->twig->setLexer($this->defaultLexer);
-
-        $event->stopPropagation();
-    }
-
-    /**
-     * Retrieve the custom twig lexer for the front
-     *
-     * @return Twig_Lexer
-     */
-    public function getFrontLexer()
-    {
-        $lexer = new Twig_Lexer($this->twig, [
-            'tag_comment'  => ['{*', '*}'],
-            'tag_block'    => ['{@', '@}'],
-            'tag_variable' => ['{$', '$}'],
-        ]);
-
-        return $lexer;
+        $this->twigLexerManager->rollbackLexer();
+        $this->stopPropagation = true;
     }
 }

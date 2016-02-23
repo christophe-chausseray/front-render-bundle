@@ -3,9 +3,12 @@
 namespace Chris\Bundle\FrontRenderBundle\Tests\Listener;
 
 use Chris\Bundle\FrontRenderBundle\Subscriber\RenderSubscriber;
+use Chris\Bundle\FrontRenderBundle\Twig\LexerManager;
 use Phake;
 use Phake_IMock;
 use PHPUnit_Framework_TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Twig_Environment;
@@ -29,31 +32,43 @@ class ExceptionListenerTest extends PHPUnit_Framework_TestCase
     protected $twigEnvironment;
 
     /**
-     * @var GetResponseEvent
+     * @var GetResponseEvent|Phake_IMock
      */
-    protected $responseEvent;
+    protected $getResponseEvent;
 
     /**
-     * @var GetResponseForExceptionEvent
+     * @var FilterResponseEvent|Phake_IMock
      */
-    protected $exceptionEvent;
+    protected $filterResponseEvent;
 
     /**
-     * @var RenderSubscriber
+     * @var RenderSubscriber|Phake_IMock
      */
     protected $renderSubscriber;
+
+    /**
+     * @var LexerManager|Phake_IMock
+     */
+    protected $lexerManager;
+
+    /**
+     * @var Request|Phake_IMock
+     */
+    protected $request;
 
     /**
      * {@inheritdoc}
      */
     public function setUp()
     {
-        $this->twigLoader      = Phake::partialMock(Twig_Loader_Filesystem::class, [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . self::TEMPLATE_PATH]);
-        $this->twigEnvironment = Phake::partialMock(Twig_Environment::class, $this->twigLoader);
-        $this->responseEvent   = Phake::mock(GetResponseEvent::class);
-        $this->exceptionEvent  = Phake::mock(GetResponseForExceptionEvent::class);
+        $this->twigLoader          = Phake::partialMock(Twig_Loader_Filesystem::class, [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . self::TEMPLATE_PATH]);
+        $this->twigEnvironment     = Phake::partialMock(Twig_Environment::class, $this->twigLoader);
+        $this->lexerManager        = Phake::partialMock(LexerManager::class, $this->twigEnvironment);
+        $this->getResponseEvent    = Phake::mock(GetResponseEvent::class);
+        $this->filterResponseEvent = Phake::mock(FilterResponseEvent::class);
+        $this->request             = Phake::mock(Request::class);
 
-        $this->renderSubscriber = new RenderSubscriber($this->twigEnvironment);
+        $this->renderSubscriber = new RenderSubscriber($this->lexerManager);
     }
 
     /**
@@ -71,19 +86,22 @@ class ExceptionListenerTest extends PHPUnit_Framework_TestCase
      */
     public function testSetLexerForTheFront()
     {
-        $this->renderSubscriber->updateTagTwig($this->responseEvent);
+        Phake::when($this->getResponseEvent)->getRequest()->thenReturn($this->request);
+        Phake::when($this->getResponseEvent)->isMasterRequest()->thenReturn(true);
+        Phake::when($this->request)->isXmlHttpRequest()->thenReturn(false);
+        $this->renderSubscriber->updateTwigLexer($this->getResponseEvent);
 
-        Phake::verify($this->twigEnvironment)->setLexer(Phake::anyParameters());
+        Phake::verify($this->lexerManager)->updateLexer(Phake::anyParameters());
     }
 
     /**
      * Test the lexer update to have the default lexer for exception
      */
-    public function testSetLexerForException()
+    public function testSetLexerForResponse()
     {
-        $this->renderSubscriber->updateTagTwig($this->responseEvent);
-        $this->renderSubscriber->onKernelException($this->exceptionEvent);
+        $this->renderSubscriber->updateTwigLexer($this->getResponseEvent);
+        $this->renderSubscriber->rollbackTwigLexer($this->filterResponseEvent);
 
-        Phake::verify($this->twigEnvironment, Phake::times(2))->setLexer(Phake::anyParameters());
+        Phake::verify($this->lexerManager)->rollbackLexer(Phake::anyParameters());
     }
 }
