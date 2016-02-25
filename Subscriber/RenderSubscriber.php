@@ -39,7 +39,7 @@ class RenderSubscriber implements EventSubscriberInterface
         return [
             KernelEvents::REQUEST   => ['updateTwigLexer'],
             KernelEvents::RESPONSE  => ['rollbackTwigLexer'],
-            KernelEvents::EXCEPTION => ['rollbackTwigLexer'],
+            KernelEvents::EXCEPTION => ['rollbackTwigLexerForException'],
         ];
     }
 
