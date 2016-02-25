@@ -42,6 +42,11 @@ class ExceptionListenerTest extends PHPUnit_Framework_TestCase
     protected $filterResponseEvent;
 
     /**
+     * @var GetResponseForExceptionEvent|Phake_IMock
+     */
+    protected $getResponseForExceptionEvent;
+
+    /**
      * @var RenderSubscriber|Phake_IMock
      */
     protected $renderSubscriber;
@@ -61,12 +66,13 @@ class ExceptionListenerTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->twigLoader          = Phake::partialMock(Twig_Loader_Filesystem::class, [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . self::TEMPLATE_PATH]);
-        $this->twigEnvironment     = Phake::partialMock(Twig_Environment::class, $this->twigLoader);
-        $this->lexerManager        = Phake::partialMock(LexerManager::class, $this->twigEnvironment);
-        $this->getResponseEvent    = Phake::mock(GetResponseEvent::class);
-        $this->filterResponseEvent = Phake::mock(FilterResponseEvent::class);
-        $this->request             = Phake::mock(Request::class);
+        $this->twigLoader                   = Phake::partialMock(Twig_Loader_Filesystem::class, [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . self::TEMPLATE_PATH]);
+        $this->twigEnvironment              = Phake::partialMock(Twig_Environment::class, $this->twigLoader);
+        $this->lexerManager                 = Phake::partialMock(LexerManager::class, $this->twigEnvironment);
+        $this->getResponseEvent             = Phake::mock(GetResponseEvent::class);
+        $this->filterResponseEvent          = Phake::mock(FilterResponseEvent::class);
+        $this->getResponseForExceptionEvent = Phake::mock(GetResponseForExceptionEvent::class);
+        $this->request                      = Phake::mock(Request::class);
 
         $this->renderSubscriber = new RenderSubscriber($this->lexerManager);
     }
@@ -101,6 +107,17 @@ class ExceptionListenerTest extends PHPUnit_Framework_TestCase
     {
         $this->renderSubscriber->updateTwigLexer($this->getResponseEvent);
         $this->renderSubscriber->rollbackTwigLexer($this->filterResponseEvent);
+
+        Phake::verify($this->lexerManager)->rollbackLexer(Phake::anyParameters());
+    }
+
+    /**
+     * Test the lexer update to have the default lexer for exception
+     */
+    public function testSetLexerForException()
+    {
+        $this->renderSubscriber->updateTwigLexer($this->getResponseEvent);
+        $this->renderSubscriber->rollbackTwigLexerForException($this->getResponseForExceptionEvent);
 
         Phake::verify($this->lexerManager)->rollbackLexer(Phake::anyParameters());
     }
