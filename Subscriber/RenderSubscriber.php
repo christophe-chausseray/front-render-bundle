@@ -6,6 +6,7 @@ use Chris\Bundle\FrontRenderBundle\Twig\LexerManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class RenderSubscriber implements EventSubscriberInterface
@@ -38,6 +39,7 @@ class RenderSubscriber implements EventSubscriberInterface
         return [
             KernelEvents::REQUEST   => ['updateTwigLexer'],
             KernelEvents::RESPONSE  => ['rollbackTwigLexer'],
+            KernelEvents::EXCEPTION => ['rollbackTwigLexer'],
         ];
     }
 
@@ -55,11 +57,22 @@ class RenderSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Set the custom twig lexer to display custom tags on the front
+     * Rollback the custom twig lexer to display custom tags on the front
      *
      * @param FilterResponseEvent $event
      */
     public function rollbackTwigLexer(FilterResponseEvent $event)
+    {
+        $this->twigLexerManager->rollbackLexer();
+        $this->stopPropagation = true;
+    }
+
+    /**
+     * Rollback the custom twig lexer to display custom tags on the front
+     *
+     * @param GetResponseForExceptionEvent $event
+     */
+    public function rollbackTwigLexerForException(GetResponseForExceptionEvent $event)
     {
         $this->twigLexerManager->rollbackLexer();
         $this->stopPropagation = true;
