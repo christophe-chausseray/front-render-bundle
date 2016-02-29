@@ -27,7 +27,6 @@ class FrontRenderExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/services'));
         $loader->load('render.xml');
-        $loader->load('subscriber.xml');
         $loader->load('manager.xml');
     }
 }
